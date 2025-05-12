@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"strconv"
 	"user-service/config"
 	"user-service/internal/repository/postgres"
+	"user-service/internal/repository/redis"
 	"user-service/migrations"
 )
 
@@ -20,5 +23,19 @@ func main() {
 
 	if err := migrations.Migrate(dbConn); err != nil {
 		log.Fatalf("Failed to run migrations: %v", err)
+	}
+
+	redisDB, err := strconv.Atoi(cfg.RedisDB)
+	if err != nil {
+		log.Fatalf("Failed to parse Redis DB: %v", err)
+	}
+
+	redisClient, err := redis.NewRedisClient(cfg.RedisAddress, cfg.RedisPassword, redisDB)
+	if err != nil {
+		log.Fatalf("Failed to create Redis client: %v", err)
+	}
+
+	if _, err := redisClient.Ping(context.Background()).Result(); err != nil {
+		log.Fatalf("Failed to ping Redis: %v", err)
 	}
 }

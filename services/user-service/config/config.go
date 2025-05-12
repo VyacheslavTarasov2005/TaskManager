@@ -10,6 +10,9 @@ type Config struct {
 	PostgresUser     string
 	PostgresPassword string
 	PostgresDBName   string
+	RedisAddress     string
+	RedisPassword    string
+	RedisDB          string
 }
 
 func LoadConfig() *Config {
@@ -19,6 +22,9 @@ func LoadConfig() *Config {
 		PostgresUser:     getEnv("POSTGRES_USER", "postgres"),
 		PostgresPassword: getEnv("POSTGRES_PASSWORD", "123456"),
 		PostgresDBName:   getEnv("POSTGRES_DB_NAME", "UsersDB"),
+		RedisAddress:     getEnv("REDIS_ADDRESS", "localhost:6379"),
+		RedisPassword:    getEnv("REDIS_PASSWORD", ""),
+		RedisDB:          getEnv("REDIS_DB", "0"),
 	}
 
 	return config
