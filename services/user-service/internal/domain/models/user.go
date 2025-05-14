@@ -14,3 +14,15 @@ type User struct {
 	Email     string `gorm:"not null"`
 	Password  string `gorm:"not null"`
 }
+
+func NewUser(name, email, password string) *User {
+	return &User{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: nil,
+		IsDeleted: false,
+		Name:      name,
+		Email:     email,
+		Password:  password,
+	}
+}

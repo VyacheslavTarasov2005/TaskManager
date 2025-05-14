@@ -13,6 +13,7 @@ type Config struct {
 	RedisAddress     string
 	RedisPassword    string
 	RedisDB          string
+	JwtSecretKey     []byte
 }
 
 func LoadConfig() *Config {
@@ -25,6 +26,7 @@ func LoadConfig() *Config {
 		RedisAddress:     getEnv("REDIS_ADDRESS", "localhost:6379"),
 		RedisPassword:    getEnv("REDIS_PASSWORD", ""),
 		RedisDB:          getEnv("REDIS_DB", "0"),
+		JwtSecretKey:     []byte(getEnv("JWT_SECRET_KEY", "super_secret_key")),
 	}
 
 	return config
