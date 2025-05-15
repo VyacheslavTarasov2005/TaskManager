@@ -12,11 +12,11 @@ type RefreshToken struct {
 	ExpiresIn time.Duration `json:"expiresIn"`
 }
 
-func NewRefreshToken(userID uuid.UUID) *RefreshToken {
+func NewRefreshToken(userID uuid.UUID, ttl time.Duration) *RefreshToken {
 	return &RefreshToken{
 		UserID:    userID,
 		Token:     uuid.New(),
 		CreatedAt: time.Now(),
-		ExpiresIn: 7 * 24 * time.Hour,
+		ExpiresIn: ttl,
 	}
 }

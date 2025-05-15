@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "internal/delivery/grpc/pb";
+
+service UserService {
+  rpc Register(RegisterRequest) returns (AuthResponse);
+  rpc Login(LoginRequest) returns (AuthResponse);
+  rpc GetClaimsFromToken(Empty) returns (ClaimsResponse);
+  rpc RefreshToken(RefreshTokenRequest) returns (AuthResponse);
+  rpc GetMyProfile(Empty) returns (UserResponse);
+  rpc GetUserProfile(GetUserProfileRequest) returns (UserResponse);
+  rpc UpdateProfile(UpdateProfileRequest) returns (UserResponse);
+  rpc ChangePassword(ChangePasswordRequest) returns (Empty);
+  rpc DeleteMe(Empty) returns (Empty);
+}
+
+// Requests
+
+message RegisterRequest {
+  string name = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message ClaimsResponse {
+  string user_id = 1;
+}
+
+message GetUserProfileRequest {
+  string id = 1;
+}
+
+message UpdateProfileRequest {
+  string name = 1;
+  string email = 2;
+}
+
+message ChangePasswordRequest {
+  string old_password = 1;
+  string new_password = 2;
+}
+
+// Responses
+
+message AuthResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+message UserResponse {
+  string id = 1;
+  string created_at = 2;
+  string updated_at = 3;
+  bool is_deleted = 4;
+  string name = 5;
+  string email = 6;
+}
+
+// Defaults
+
+message Empty {}

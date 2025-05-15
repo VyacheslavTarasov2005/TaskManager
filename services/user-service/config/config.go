@@ -2,6 +2,8 @@ package config
 
 import (
 	"os"
+	"strconv"
+	"time"
 )
 
 type Config struct {
@@ -12,8 +14,10 @@ type Config struct {
 	PostgresDBName   string
 	RedisAddress     string
 	RedisPassword    string
-	RedisDB          string
+	RedisDB          int
 	JwtSecretKey     []byte
+	AccessTokenTTL   time.Duration
+	RefreshTokenTTL  time.Duration
 }
 
 func LoadConfig() *Config {
@@ -25,17 +29,38 @@ func LoadConfig() *Config {
 		PostgresDBName:   getEnv("POSTGRES_DB_NAME", "UsersDB"),
 		RedisAddress:     getEnv("REDIS_ADDRESS", "localhost:6379"),
 		RedisPassword:    getEnv("REDIS_PASSWORD", ""),
-		RedisDB:          getEnv("REDIS_DB", "0"),
+		RedisDB:          getEnv("REDIS_DB", 0),
 		JwtSecretKey:     []byte(getEnv("JWT_SECRET_KEY", "super_secret_key")),
+		AccessTokenTTL:   getEnv("ACCESS_TOKEN_TTL", 15*time.Minute),
+		RefreshTokenTTL:  getEnv("REFRESH_TOKEN_TTL", 7*24*time.Hour),
 	}
 
 	return config
 }
 
-func getEnv(key, defaultValue string) string {
+func getEnv[T any](key string, defaultValue T) T {
 	value := os.Getenv(key)
 	if value == "" {
 		return defaultValue
 	}
-	return value
+
+	var result any
+	var err error
+
+	switch any(defaultValue).(type) {
+	case string:
+		result = value
+	case int:
+		result, err = strconv.Atoi(value)
+	case time.Duration:
+		result, err = time.ParseDuration(value)
+	default:
+		return defaultValue
+	}
+
+	if err != nil {
+		return defaultValue
+	}
+
+	return result.(T)
 }

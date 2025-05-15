@@ -3,24 +3,29 @@ package implementations
 import (
 	"context"
 	"github.com/google/uuid"
+	"time"
 	"user-service/internal/domain/interfaces"
 	"user-service/internal/domain/models"
 	"user-service/internal/service/errors"
 	serviceInterfaces "user-service/internal/service/interfaces"
+	"user-service/pkg/utils"
 )
 
 type UserServiceImpl struct {
-	userRepository interfaces.UserRepository
-	authService    serviceInterfaces.AuthService
+	userRepository         interfaces.UserRepository
+	authService            serviceInterfaces.AuthService
+	refreshTokenRepository interfaces.RefreshTokenRepository
 }
 
 func NewUserServiceImpl(
 	userRepository interfaces.UserRepository,
 	authService serviceInterfaces.AuthService,
+	refreshTokenRepository interfaces.RefreshTokenRepository,
 ) *UserServiceImpl {
 	return &UserServiceImpl{
-		userRepository: userRepository,
-		authService:    authService,
+		userRepository:         userRepository,
+		authService:            authService,
+		refreshTokenRepository: refreshTokenRepository,
 	}
 }
 
@@ -73,6 +78,16 @@ func (s *UserServiceImpl) Login(ctx context.Context, email, password string) (*s
 		return nil, nil, invalidCredentialsError
 	}
 
+	if user.IsDeleted {
+		return nil, nil, errors.ApplicationError{
+			StatusCode: 403,
+			Code:       "DeletedUser",
+			Errors: map[string]string{
+				"message": "User is deleted",
+			},
+		}
+	}
+
 	accessToken, refreshToken, err := s.authService.CreateToken(ctx, user.ID)
 	if err != nil {
 		return nil, nil, err
@@ -96,16 +111,29 @@ func (s *UserServiceImpl) GetProfile(ctx context.Context, userID uuid.UUID) (*mo
 		}
 	}
 
+	if user.IsDeleted {
+		return &models.User{
+			ID:        user.ID,
+			CreatedAt: user.CreatedAt,
+			UpdatedAt: user.UpdatedAt,
+			IsDeleted: user.IsDeleted,
+			Name:      "DELETED",
+			Email:     "DELETED",
+			Password:  "DELETED",
+		}, nil
+	}
+
 	return user, nil
 }
 
-func (s *UserServiceImpl) UpdateProfile(ctx context.Context, userID uuid.UUID, name, email string) error {
+func (s *UserServiceImpl) UpdateProfile(ctx context.Context, userID uuid.UUID, name, email string) (*models.User,
+	error) {
 	user, err := s.userRepository.GetByID(ctx, userID)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if user == nil {
-		return errors.ApplicationError{
+		return nil, errors.ApplicationError{
 			StatusCode: 404,
 			Code:       "NotFound",
 			Errors: map[string]string{
@@ -114,12 +142,22 @@ func (s *UserServiceImpl) UpdateProfile(ctx context.Context, userID uuid.UUID, n
 		}
 	}
 
+	if user.IsDeleted {
+		return nil, errors.ApplicationError{
+			StatusCode: 403,
+			Code:       "DeletedUser",
+			Errors: map[string]string{
+				"message": "User is deleted",
+			},
+		}
+	}
+
 	sameEmailUser, err := s.userRepository.GetByEmail(ctx, email)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if sameEmailUser != nil && sameEmailUser.ID != user.ID {
-		return errors.ApplicationError{
+		return nil, errors.ApplicationError{
 			StatusCode: 409,
 			Code:       "EmailConflict",
 			Errors: map[string]string{
@@ -130,12 +168,14 @@ func (s *UserServiceImpl) UpdateProfile(ctx context.Context, userID uuid.UUID, n
 
 	user.Name = name
 	user.Email = email
+	user.UpdatedAt = utils.Ptr(time.Now())
+
 	err = s.userRepository.Update(ctx, *user)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return user, nil
 }
 
 func (s *UserServiceImpl) ChangePassword(ctx context.Context, userID uuid.UUID, oldPassword, newPassword string) error {
@@ -153,6 +193,16 @@ func (s *UserServiceImpl) ChangePassword(ctx context.Context, userID uuid.UUID, 
 		}
 	}
 
+	if user.IsDeleted {
+		return errors.ApplicationError{
+			StatusCode: 403,
+			Code:       "DeletedUser",
+			Errors: map[string]string{
+				"message": "User is deleted",
+			},
+		}
+	}
+
 	if user.Password != oldPassword {
 		return errors.ApplicationError{
 			StatusCode: 403,
@@ -163,7 +213,12 @@ func (s *UserServiceImpl) ChangePassword(ctx context.Context, userID uuid.UUID, 
 		}
 	}
 
+	if err = s.refreshTokenRepository.DeleteAllByUserID(ctx, userID); err != nil {
+		return err
+	}
+
 	user.Password = newPassword
+	user.UpdatedAt = utils.Ptr(time.Now())
 
 	err = s.userRepository.Update(ctx, *user)
 	if err != nil {
@@ -188,7 +243,23 @@ func (s *UserServiceImpl) DeleteUser(ctx context.Context, userID uuid.UUID) erro
 		}
 	}
 
+	if user.IsDeleted {
+		return errors.ApplicationError{
+			StatusCode: 409,
+			Code:       "DeletedUser",
+			Errors: map[string]string{
+				"message": "User is deleted",
+			},
+		}
+	}
+
+	if err = s.refreshTokenRepository.DeleteAllByUserID(ctx, userID); err != nil {
+		return err
+	}
+
 	user.IsDeleted = true
+	user.UpdatedAt = utils.Ptr(time.Now())
+
 	if err := s.userRepository.Update(ctx, *user); err != nil {
 		return err
 	}

@@ -17,7 +17,7 @@ func NewUserRepositoryImpl(db *gorm.DB) *UserRepositoryImpl {
 }
 
 func (repo *UserRepositoryImpl) Add(ctx context.Context, user models.User) error {
-	return repo.db.WithContext(ctx).Create(user).Error
+	return repo.db.WithContext(ctx).Create(&user).Error
 }
 
 func (repo *UserRepositoryImpl) GetAll(ctx context.Context) ([]*models.User, error) {

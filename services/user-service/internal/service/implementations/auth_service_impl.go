@@ -12,21 +12,29 @@ import (
 
 type AuthServiceImpl struct {
 	jwtSecretKey           []byte
-	ttl                    time.Duration
+	accessTokenTTL         time.Duration
+	refreshTokenTTL        time.Duration
 	refreshTokenRepository interfaces.RefreshTokenRepository
 }
 
-func NewAuthServiceImpl(jwtSecretKey []byte, ttl time.Duration) *AuthServiceImpl {
+func NewAuthServiceImpl(
+	jwtSecretKey []byte,
+	accessTokenTTL time.Duration,
+	refreshTokenTTL time.Duration,
+	repository interfaces.RefreshTokenRepository,
+) *AuthServiceImpl {
 	return &AuthServiceImpl{
-		jwtSecretKey: jwtSecretKey,
-		ttl:          ttl,
+		jwtSecretKey:           jwtSecretKey,
+		accessTokenTTL:         accessTokenTTL,
+		refreshTokenTTL:        refreshTokenTTL,
+		refreshTokenRepository: repository,
 	}
 }
 
 func (s *AuthServiceImpl) CreateToken(ctx context.Context, userID uuid.UUID) (*string, *uuid.UUID, error) {
 	claims := jwt.MapClaims{
 		"user_id": userID,
-		"exp":     time.Now().Add(s.ttl).Unix(),
+		"exp":     time.Now().Add(s.accessTokenTTL).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -35,7 +43,7 @@ func (s *AuthServiceImpl) CreateToken(ctx context.Context, userID uuid.UUID) (*s
 		return nil, nil, err
 	}
 
-	refreshToken := models.NewRefreshToken(userID)
+	refreshToken := models.NewRefreshToken(userID, s.refreshTokenTTL)
 	if err := s.refreshTokenRepository.Add(ctx, *refreshToken); err != nil {
 		return nil, nil, err
 	}
@@ -95,12 +103,4 @@ func (s *AuthServiceImpl) RefreshToken(ctx context.Context, refreshToken uuid.UU
 	}
 
 	return newAccessToken, newRefreshToken, nil
-}
-
-func (s *AuthServiceImpl) Logout(ctx context.Context, userID uuid.UUID) error {
-	if err := s.refreshTokenRepository.DeleteAllByUserID(ctx, userID); err != nil {
-		return err
-	}
-
-	return nil
 }
