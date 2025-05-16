@@ -35,7 +35,7 @@ func (s *UserServer) Register(ctx context.Context, req *pb.RegisterRequest) (*pb
 	}, nil
 }
 
-func (s *UserServer) Login(ctx context.Context, req *pb.LoginRequest) (*pb.AuthResponse, error) {
+func (s *UserServer) Login(ctx context.Context, req *pb.AuthRequest) (*pb.AuthResponse, error) {
 	accessToken, refreshToken, err := s.userService.Login(ctx, req.Email, req.Password)
 	if err != nil {
 		return nil, status.Error(errors.ParseError(err), err.Error())
@@ -184,4 +184,16 @@ func (s *UserServer) DeleteMe(ctx context.Context, _ *pb.Empty) (*pb.Empty, erro
 	}
 
 	return &pb.Empty{}, nil
+}
+
+func (s *UserServer) RecoverAccount(ctx context.Context, req *pb.AuthRequest) (*pb.AuthResponse, error) {
+	accessToken, refreshToken, err := s.userService.RecoverAccount(ctx, req.Email, req.Password)
+	if err != nil {
+		return nil, status.Error(errors.ParseError(err), err.Error())
+	}
+
+	return &pb.AuthResponse{
+		AccessToken:  *accessToken,
+		RefreshToken: refreshToken.String(),
+	}, nil
 }

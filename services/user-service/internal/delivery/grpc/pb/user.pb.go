@@ -81,7 +81,7 @@ func (x *RegisterRequest) GetPassword() string {
 	return ""
 }
 
-type LoginRequest struct {
+type AuthRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
 	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
@@ -89,20 +89,20 @@ type LoginRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *LoginRequest) Reset() {
-	*x = LoginRequest{}
+func (x *AuthRequest) Reset() {
+	*x = AuthRequest{}
 	mi := &file_user_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *LoginRequest) String() string {
+func (x *AuthRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*LoginRequest) ProtoMessage() {}
+func (*AuthRequest) ProtoMessage() {}
 
-func (x *LoginRequest) ProtoReflect() protoreflect.Message {
+func (x *AuthRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_user_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -114,19 +114,19 @@ func (x *LoginRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use LoginRequest.ProtoReflect.Descriptor instead.
-func (*LoginRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use AuthRequest.ProtoReflect.Descriptor instead.
+func (*AuthRequest) Descriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *LoginRequest) GetEmail() string {
+func (x *AuthRequest) GetEmail() string {
 	if x != nil {
 		return x.Email
 	}
 	return ""
 }
 
-func (x *LoginRequest) GetPassword() string {
+func (x *AuthRequest) GetPassword() string {
 	if x != nil {
 		return x.Password
 	}
@@ -550,8 +550,8 @@ const file_user_proto_rawDesc = "" +
 	"\x0fRegisterRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1a\n" +
-	"\bpassword\x18\x03 \x01(\tR\bpassword\"@\n" +
-	"\fLoginRequest\x12\x14\n" +
+	"\bpassword\x18\x03 \x01(\tR\bpassword\"?\n" +
+	"\vAuthRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\":\n" +
 	"\x13RefreshTokenRequest\x12#\n" +
@@ -579,17 +579,18 @@ const file_user_proto_rawDesc = "" +
 	"is_deleted\x18\x04 \x01(\bR\tisDeleted\x12\x12\n" +
 	"\x04name\x18\x05 \x01(\tR\x04name\x12\x14\n" +
 	"\x05email\x18\x06 \x01(\tR\x05email\"\a\n" +
-	"\x05Empty2\x84\x04\n" +
+	"\x05Empty2\xbc\x04\n" +
 	"\vUserService\x125\n" +
-	"\bRegister\x12\x15.user.RegisterRequest\x1a\x12.user.AuthResponse\x12/\n" +
-	"\x05Login\x12\x12.user.LoginRequest\x1a\x12.user.AuthResponse\x127\n" +
+	"\bRegister\x12\x15.user.RegisterRequest\x1a\x12.user.AuthResponse\x12.\n" +
+	"\x05Login\x12\x11.user.AuthRequest\x1a\x12.user.AuthResponse\x127\n" +
 	"\x12GetClaimsFromToken\x12\v.user.Empty\x1a\x14.user.ClaimsResponse\x12=\n" +
 	"\fRefreshToken\x12\x19.user.RefreshTokenRequest\x1a\x12.user.AuthResponse\x12/\n" +
 	"\fGetMyProfile\x12\v.user.Empty\x1a\x12.user.UserResponse\x12A\n" +
 	"\x0eGetUserProfile\x12\x1b.user.GetUserProfileRequest\x1a\x12.user.UserResponse\x12?\n" +
 	"\rUpdateProfile\x12\x1a.user.UpdateProfileRequest\x1a\x12.user.UserResponse\x12:\n" +
 	"\x0eChangePassword\x12\x1b.user.ChangePasswordRequest\x1a\v.user.Empty\x12$\n" +
-	"\bDeleteMe\x12\v.user.Empty\x1a\v.user.EmptyB\x1bZ\x19internal/delivery/grpc/pbb\x06proto3"
+	"\bDeleteMe\x12\v.user.Empty\x1a\v.user.Empty\x127\n" +
+	"\x0eRecoverAccount\x12\x11.user.AuthRequest\x1a\x12.user.AuthResponseB\x1bZ\x19internal/delivery/grpc/pbb\x06proto3"
 
 var (
 	file_user_proto_rawDescOnce sync.Once
@@ -606,7 +607,7 @@ func file_user_proto_rawDescGZIP() []byte {
 var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_user_proto_goTypes = []any{
 	(*RegisterRequest)(nil),       // 0: user.RegisterRequest
-	(*LoginRequest)(nil),          // 1: user.LoginRequest
+	(*AuthRequest)(nil),           // 1: user.AuthRequest
 	(*RefreshTokenRequest)(nil),   // 2: user.RefreshTokenRequest
 	(*ClaimsResponse)(nil),        // 3: user.ClaimsResponse
 	(*GetUserProfileRequest)(nil), // 4: user.GetUserProfileRequest
@@ -617,29 +618,31 @@ var file_user_proto_goTypes = []any{
 	(*Empty)(nil),                 // 9: user.Empty
 }
 var file_user_proto_depIdxs = []int32{
-	0, // 0: user.UserService.Register:input_type -> user.RegisterRequest
-	1, // 1: user.UserService.Login:input_type -> user.LoginRequest
-	9, // 2: user.UserService.GetClaimsFromToken:input_type -> user.Empty
-	2, // 3: user.UserService.RefreshToken:input_type -> user.RefreshTokenRequest
-	9, // 4: user.UserService.GetMyProfile:input_type -> user.Empty
-	4, // 5: user.UserService.GetUserProfile:input_type -> user.GetUserProfileRequest
-	5, // 6: user.UserService.UpdateProfile:input_type -> user.UpdateProfileRequest
-	6, // 7: user.UserService.ChangePassword:input_type -> user.ChangePasswordRequest
-	9, // 8: user.UserService.DeleteMe:input_type -> user.Empty
-	7, // 9: user.UserService.Register:output_type -> user.AuthResponse
-	7, // 10: user.UserService.Login:output_type -> user.AuthResponse
-	3, // 11: user.UserService.GetClaimsFromToken:output_type -> user.ClaimsResponse
-	7, // 12: user.UserService.RefreshToken:output_type -> user.AuthResponse
-	8, // 13: user.UserService.GetMyProfile:output_type -> user.UserResponse
-	8, // 14: user.UserService.GetUserProfile:output_type -> user.UserResponse
-	8, // 15: user.UserService.UpdateProfile:output_type -> user.UserResponse
-	9, // 16: user.UserService.ChangePassword:output_type -> user.Empty
-	9, // 17: user.UserService.DeleteMe:output_type -> user.Empty
-	9, // [9:18] is the sub-list for method output_type
-	0, // [0:9] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0,  // 0: user.UserService.Register:input_type -> user.RegisterRequest
+	1,  // 1: user.UserService.Login:input_type -> user.AuthRequest
+	9,  // 2: user.UserService.GetClaimsFromToken:input_type -> user.Empty
+	2,  // 3: user.UserService.RefreshToken:input_type -> user.RefreshTokenRequest
+	9,  // 4: user.UserService.GetMyProfile:input_type -> user.Empty
+	4,  // 5: user.UserService.GetUserProfile:input_type -> user.GetUserProfileRequest
+	5,  // 6: user.UserService.UpdateProfile:input_type -> user.UpdateProfileRequest
+	6,  // 7: user.UserService.ChangePassword:input_type -> user.ChangePasswordRequest
+	9,  // 8: user.UserService.DeleteMe:input_type -> user.Empty
+	1,  // 9: user.UserService.RecoverAccount:input_type -> user.AuthRequest
+	7,  // 10: user.UserService.Register:output_type -> user.AuthResponse
+	7,  // 11: user.UserService.Login:output_type -> user.AuthResponse
+	3,  // 12: user.UserService.GetClaimsFromToken:output_type -> user.ClaimsResponse
+	7,  // 13: user.UserService.RefreshToken:output_type -> user.AuthResponse
+	8,  // 14: user.UserService.GetMyProfile:output_type -> user.UserResponse
+	8,  // 15: user.UserService.GetUserProfile:output_type -> user.UserResponse
+	8,  // 16: user.UserService.UpdateProfile:output_type -> user.UserResponse
+	9,  // 17: user.UserService.ChangePassword:output_type -> user.Empty
+	9,  // 18: user.UserService.DeleteMe:output_type -> user.Empty
+	7,  // 19: user.UserService.RecoverAccount:output_type -> user.AuthResponse
+	10, // [10:20] is the sub-list for method output_type
+	0,  // [0:10] is the sub-list for method input_type
+	0,  // [0:0] is the sub-list for extension type_name
+	0,  // [0:0] is the sub-list for extension extendee
+	0,  // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_user_proto_init() }

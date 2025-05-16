@@ -6,7 +6,7 @@ option go_package = "internal/delivery/grpc/pb";
 
 service UserService {
   rpc Register(RegisterRequest) returns (AuthResponse);
-  rpc Login(LoginRequest) returns (AuthResponse);
+  rpc Login(AuthRequest) returns (AuthResponse);
   rpc GetClaimsFromToken(Empty) returns (ClaimsResponse);
   rpc RefreshToken(RefreshTokenRequest) returns (AuthResponse);
   rpc GetMyProfile(Empty) returns (UserResponse);
@@ -14,6 +14,7 @@ service UserService {
   rpc UpdateProfile(UpdateProfileRequest) returns (UserResponse);
   rpc ChangePassword(ChangePasswordRequest) returns (Empty);
   rpc DeleteMe(Empty) returns (Empty);
+  rpc RecoverAccount(AuthRequest) returns (AuthResponse);
 }
 
 // Requests
@@ -24,7 +25,7 @@ message RegisterRequest {
   string password = 3;
 }
 
-message LoginRequest {
+message AuthRequest {
   string email = 1;
   string password = 2;
 }

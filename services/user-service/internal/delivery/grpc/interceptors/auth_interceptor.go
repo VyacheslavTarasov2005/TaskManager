@@ -46,9 +46,10 @@ func AuthInterceptor(authService interfaces.AuthService) grpc.UnaryServerInterce
 
 func isPublicMethod(method string) bool {
 	publicMethods := map[string]bool{
-		"/user.UserService/Register":     true,
-		"/user.UserService/Login":        true,
-		"/user.UserService/RefreshToken": true,
+		"/user.UserService/Register":       true,
+		"/user.UserService/Login":          true,
+		"/user.UserService/RefreshToken":   true,
+		"/user.UserService/RecoverAccount": true,
 	}
 	return publicMethods[method]
 }

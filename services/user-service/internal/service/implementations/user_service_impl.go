@@ -80,7 +80,7 @@ func (s *UserServiceImpl) Login(ctx context.Context, email, password string) (*s
 		return nil, nil, invalidCredentialsError
 	}
 
-	if err := comparePasswords(user.Password, password); err != nil {
+	if err = comparePasswords(user.Password, password); err != nil {
 		return nil, nil, invalidCredentialsError
 	}
 
@@ -271,6 +271,51 @@ func (s *UserServiceImpl) DeleteUser(ctx context.Context, userID uuid.UUID) erro
 	}
 
 	return nil
+}
+
+func (s *UserServiceImpl) RecoverAccount(ctx context.Context, email, password string) (*string, *uuid.UUID, error) {
+	invalidCredentialsError := errors.ApplicationError{
+		StatusCode: 401,
+		Code:       "InvalidCredentials",
+		Errors: map[string]string{
+			"message": "Invalid email or password",
+		},
+	}
+	user, err := s.userRepository.GetByEmail(ctx, email)
+	if err != nil {
+		return nil, nil, err
+	}
+	if user == nil {
+		return nil, nil, invalidCredentialsError
+	}
+
+	if err = comparePasswords(user.Password, password); err != nil {
+		return nil, nil, invalidCredentialsError
+	}
+
+	if !user.IsDeleted {
+		return nil, nil, errors.ApplicationError{
+			StatusCode: 403,
+			Code:       "NotDeletedUser",
+			Errors: map[string]string{
+				"message": "User is not deleted",
+			},
+		}
+	}
+
+	user.IsDeleted = false
+	user.UpdatedAt = utils.Ptr(time.Now())
+
+	if err = s.userRepository.Update(ctx, *user); err != nil {
+		return nil, nil, err
+	}
+
+	accessToken, refreshToken, err := s.authService.CreateToken(ctx, user.ID)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return accessToken, refreshToken, nil
 }
 
 func hashPassword(password string) (string, error) {
