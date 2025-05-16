@@ -3,6 +3,7 @@ package implementations
 import (
 	"context"
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 	"time"
 	"user-service/internal/domain/interfaces"
 	"user-service/internal/domain/models"
@@ -44,7 +45,12 @@ func (s *UserServiceImpl) Register(ctx context.Context, name, email, password st
 		}
 	}
 
-	user := models.NewUser(name, email, password)
+	hashedPassword, err := hashPassword(password)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	user := models.NewUser(name, email, hashedPassword)
 
 	accessToken, refreshToken, err := s.authService.CreateToken(ctx, user.ID)
 	if err != nil {
@@ -74,7 +80,7 @@ func (s *UserServiceImpl) Login(ctx context.Context, email, password string) (*s
 		return nil, nil, invalidCredentialsError
 	}
 
-	if user.Password != password {
+	if err := comparePasswords(user.Password, password); err != nil {
 		return nil, nil, invalidCredentialsError
 	}
 
@@ -203,7 +209,7 @@ func (s *UserServiceImpl) ChangePassword(ctx context.Context, userID uuid.UUID, 
 		}
 	}
 
-	if user.Password != oldPassword {
+	if err = comparePasswords(user.Password, oldPassword); err != nil {
 		return errors.ApplicationError{
 			StatusCode: 403,
 			Code:       "IncorrectPassword",
@@ -265,4 +271,13 @@ func (s *UserServiceImpl) DeleteUser(ctx context.Context, userID uuid.UUID) erro
 	}
 
 	return nil
+}
+
+func hashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(bytes), err
+}
+
+func comparePasswords(hashedPassword string, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 }
