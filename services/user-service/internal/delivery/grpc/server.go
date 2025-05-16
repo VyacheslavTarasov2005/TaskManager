@@ -5,6 +5,8 @@ import (
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
+	"time"
 	"user-service/internal/delivery/grpc/errors"
 	"user-service/internal/delivery/grpc/pb"
 	"user-service/internal/service/interfaces"
@@ -93,8 +95,8 @@ func (s *UserServer) GetMyProfile(ctx context.Context, _ *pb.Empty) (*pb.UserRes
 
 	return &pb.UserResponse{
 		Id:        user.ID.String(),
-		CreatedAt: user.CreatedAt.String(),
-		UpdatedAt: user.UpdatedAt.String(),
+		CreatedAt: timestamppb.New(user.CreatedAt),
+		UpdatedAt: nullableTimeToTimestamppb(user.UpdatedAt),
 		IsDeleted: user.IsDeleted,
 		Name:      user.Name,
 		Email:     user.Email,
@@ -114,8 +116,8 @@ func (s *UserServer) GetUserProfile(ctx context.Context, req *pb.GetUserProfileR
 
 	return &pb.UserResponse{
 		Id:        user.ID.String(),
-		CreatedAt: user.CreatedAt.String(),
-		UpdatedAt: user.UpdatedAt.String(),
+		CreatedAt: timestamppb.New(user.CreatedAt),
+		UpdatedAt: nullableTimeToTimestamppb(user.UpdatedAt),
 		IsDeleted: user.IsDeleted,
 		Name:      user.Name,
 		Email:     user.Email,
@@ -140,8 +142,8 @@ func (s *UserServer) UpdateProfile(ctx context.Context, req *pb.UpdateProfileReq
 
 	return &pb.UserResponse{
 		Id:        user.ID.String(),
-		CreatedAt: user.CreatedAt.String(),
-		UpdatedAt: user.UpdatedAt.String(),
+		CreatedAt: timestamppb.New(user.CreatedAt),
+		UpdatedAt: nullableTimeToTimestamppb(user.UpdatedAt),
 		IsDeleted: user.IsDeleted,
 		Name:      user.Name,
 		Email:     user.Email,
@@ -196,4 +198,12 @@ func (s *UserServer) RecoverAccount(ctx context.Context, req *pb.AuthRequest) (*
 		AccessToken:  *accessToken,
 		RefreshToken: refreshToken.String(),
 	}, nil
+}
+
+func nullableTimeToTimestamppb(t *time.Time) *timestamppb.Timestamp {
+	if t == nil {
+		return nil
+	} else {
+		return nil
+	}
 }

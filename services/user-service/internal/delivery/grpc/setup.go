@@ -10,7 +10,10 @@ import (
 
 func SetupServer(userService interfaces.UserService, authService interfaces.AuthService) *grpc.Server {
 	srv := grpc.NewServer(
-		grpc.UnaryInterceptor(interceptors.AuthInterceptor(authService)),
+		grpc.ChainUnaryInterceptor(
+			interceptors.AuthInterceptor(authService),
+			interceptors.ValidationInterceptor(),
+		),
 	)
 
 	pb.RegisterUserServiceServer(srv, NewUserServer(userService, authService))
