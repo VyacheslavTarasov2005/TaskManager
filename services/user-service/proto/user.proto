@@ -98,3 +98,8 @@ message UserResponse {
 // Defaults
 
 message Empty {}
+
+message ErrorDetail {
+  string code = 1;
+  map<string, string> errors = 2;
+}

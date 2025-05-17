@@ -543,6 +543,58 @@ func (*Empty) Descriptor() ([]byte, []int) {
 	return file_user_proto_rawDescGZIP(), []int{9}
 }
 
+type ErrorDetail struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	Errors        map[string]string      `protobuf:"bytes,2,rep,name=errors,proto3" json:"errors,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ErrorDetail) Reset() {
+	*x = ErrorDetail{}
+	mi := &file_user_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ErrorDetail) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ErrorDetail) ProtoMessage() {}
+
+func (x *ErrorDetail) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ErrorDetail.ProtoReflect.Descriptor instead.
+func (*ErrorDetail) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *ErrorDetail) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *ErrorDetail) GetErrors() map[string]string {
+	if x != nil {
+		return x.Errors
+	}
+	return nil
+}
+
 var File_user_proto protoreflect.FileDescriptor
 
 const file_user_proto_rawDesc = "" +
@@ -582,7 +634,13 @@ const file_user_proto_rawDesc = "" +
 	"\x04name\x18\x05 \x01(\tR\x04name\x12\x14\n" +
 	"\x05email\x18\x06 \x01(\tR\x05emailB\r\n" +
 	"\v_updated_at\"\a\n" +
-	"\x05Empty2\xbc\x04\n" +
+	"\x05Empty\"\x93\x01\n" +
+	"\vErrorDetail\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\tR\x04code\x125\n" +
+	"\x06errors\x18\x02 \x03(\v2\x1d.user.ErrorDetail.ErrorsEntryR\x06errors\x1a9\n" +
+	"\vErrorsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x012\xbc\x04\n" +
 	"\vUserService\x125\n" +
 	"\bRegister\x12\x15.user.RegisterRequest\x1a\x12.user.AuthResponse\x12.\n" +
 	"\x05Login\x12\x11.user.AuthRequest\x1a\x12.user.AuthResponse\x127\n" +
@@ -607,7 +665,7 @@ func file_user_proto_rawDescGZIP() []byte {
 	return file_user_proto_rawDescData
 }
 
-var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_user_proto_goTypes = []any{
 	(*RegisterRequest)(nil),       // 0: user.RegisterRequest
 	(*AuthRequest)(nil),           // 1: user.AuthRequest
@@ -619,36 +677,39 @@ var file_user_proto_goTypes = []any{
 	(*ClaimsResponse)(nil),        // 7: user.ClaimsResponse
 	(*UserResponse)(nil),          // 8: user.UserResponse
 	(*Empty)(nil),                 // 9: user.Empty
-	(*timestamppb.Timestamp)(nil), // 10: google.protobuf.Timestamp
+	(*ErrorDetail)(nil),           // 10: user.ErrorDetail
+	nil,                           // 11: user.ErrorDetail.ErrorsEntry
+	(*timestamppb.Timestamp)(nil), // 12: google.protobuf.Timestamp
 }
 var file_user_proto_depIdxs = []int32{
-	10, // 0: user.UserResponse.created_at:type_name -> google.protobuf.Timestamp
-	10, // 1: user.UserResponse.updated_at:type_name -> google.protobuf.Timestamp
-	0,  // 2: user.UserService.Register:input_type -> user.RegisterRequest
-	1,  // 3: user.UserService.Login:input_type -> user.AuthRequest
-	9,  // 4: user.UserService.GetClaimsFromToken:input_type -> user.Empty
-	2,  // 5: user.UserService.RefreshToken:input_type -> user.RefreshTokenRequest
-	9,  // 6: user.UserService.GetMyProfile:input_type -> user.Empty
-	3,  // 7: user.UserService.GetUserProfile:input_type -> user.GetUserProfileRequest
-	4,  // 8: user.UserService.UpdateProfile:input_type -> user.UpdateProfileRequest
-	5,  // 9: user.UserService.ChangePassword:input_type -> user.ChangePasswordRequest
-	9,  // 10: user.UserService.DeleteMe:input_type -> user.Empty
-	1,  // 11: user.UserService.RecoverAccount:input_type -> user.AuthRequest
-	6,  // 12: user.UserService.Register:output_type -> user.AuthResponse
-	6,  // 13: user.UserService.Login:output_type -> user.AuthResponse
-	7,  // 14: user.UserService.GetClaimsFromToken:output_type -> user.ClaimsResponse
-	6,  // 15: user.UserService.RefreshToken:output_type -> user.AuthResponse
-	8,  // 16: user.UserService.GetMyProfile:output_type -> user.UserResponse
-	8,  // 17: user.UserService.GetUserProfile:output_type -> user.UserResponse
-	8,  // 18: user.UserService.UpdateProfile:output_type -> user.UserResponse
-	9,  // 19: user.UserService.ChangePassword:output_type -> user.Empty
-	9,  // 20: user.UserService.DeleteMe:output_type -> user.Empty
-	6,  // 21: user.UserService.RecoverAccount:output_type -> user.AuthResponse
-	12, // [12:22] is the sub-list for method output_type
-	2,  // [2:12] is the sub-list for method input_type
-	2,  // [2:2] is the sub-list for extension type_name
-	2,  // [2:2] is the sub-list for extension extendee
-	0,  // [0:2] is the sub-list for field type_name
+	12, // 0: user.UserResponse.created_at:type_name -> google.protobuf.Timestamp
+	12, // 1: user.UserResponse.updated_at:type_name -> google.protobuf.Timestamp
+	11, // 2: user.ErrorDetail.errors:type_name -> user.ErrorDetail.ErrorsEntry
+	0,  // 3: user.UserService.Register:input_type -> user.RegisterRequest
+	1,  // 4: user.UserService.Login:input_type -> user.AuthRequest
+	9,  // 5: user.UserService.GetClaimsFromToken:input_type -> user.Empty
+	2,  // 6: user.UserService.RefreshToken:input_type -> user.RefreshTokenRequest
+	9,  // 7: user.UserService.GetMyProfile:input_type -> user.Empty
+	3,  // 8: user.UserService.GetUserProfile:input_type -> user.GetUserProfileRequest
+	4,  // 9: user.UserService.UpdateProfile:input_type -> user.UpdateProfileRequest
+	5,  // 10: user.UserService.ChangePassword:input_type -> user.ChangePasswordRequest
+	9,  // 11: user.UserService.DeleteMe:input_type -> user.Empty
+	1,  // 12: user.UserService.RecoverAccount:input_type -> user.AuthRequest
+	6,  // 13: user.UserService.Register:output_type -> user.AuthResponse
+	6,  // 14: user.UserService.Login:output_type -> user.AuthResponse
+	7,  // 15: user.UserService.GetClaimsFromToken:output_type -> user.ClaimsResponse
+	6,  // 16: user.UserService.RefreshToken:output_type -> user.AuthResponse
+	8,  // 17: user.UserService.GetMyProfile:output_type -> user.UserResponse
+	8,  // 18: user.UserService.GetUserProfile:output_type -> user.UserResponse
+	8,  // 19: user.UserService.UpdateProfile:output_type -> user.UserResponse
+	9,  // 20: user.UserService.ChangePassword:output_type -> user.Empty
+	9,  // 21: user.UserService.DeleteMe:output_type -> user.Empty
+	6,  // 22: user.UserService.RecoverAccount:output_type -> user.AuthResponse
+	13, // [13:23] is the sub-list for method output_type
+	3,  // [3:13] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_user_proto_init() }
@@ -663,7 +724,7 @@ func file_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_user_proto_rawDesc), len(file_user_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
