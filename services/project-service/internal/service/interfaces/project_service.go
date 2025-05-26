@@ -7,10 +7,10 @@ import (
 	"github.com/google/uuid"
 )
 
-// отредачить
-type UserService interface {
+type ProjectService interface {
 	Create(ctx context.Context, projectName string, userId uuid.UUID) (*uuid.UUID, error)
-	Get(ctx context.Context, projectId uuid.UUID) (*models.Project, error)
+	GetProject(ctx context.Context, projectId uuid.UUID) (*models.Project, error)
+	GetProjectsByUser(ctx context.Context, ownerId uuid.UUID) ([]*models.Project, error)
 	Update(ctx context.Context, projectId uuid.UUID, newName string) (*models.Project, error)
 	Delete(ctx context.Context, projectId uuid.UUID) error
 }

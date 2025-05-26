@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"project-service/config"
+	"project-service/internal/delivery/grpc"
 	"project-service/internal/repository/postgres"
+	"project-service/internal/service/implementations"
 	"project-service/migrations"
 )
 
@@ -20,5 +22,15 @@ func main() {
 
 	if err := migrations.Migrate(dbConn); err != nil {
 		log.Fatalf("Failed to run migrations: %v", err)
+	}
+
+	projectRepository := postgres.NewProjectRepositoryImpl(dbConn)
+
+	projectService := implementations.NewProjectServiceImpl(projectRepository)
+
+	grpcServer := grpc.SetupServer(projectService)
+
+	if err = grpc.StartGRPCServer(grpcServer, "50051"); err != nil {
+		log.Fatalf("Failed to start grpc server: %v", err)
 	}
 }

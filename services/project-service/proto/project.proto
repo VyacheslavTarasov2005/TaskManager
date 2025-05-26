@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package project;
+
+option go_package = "internal/delivery/grpc/pb;pb";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "validate/validate.proto";
+
+service ProjectService {
+  rpc Create(CreateRequest) returns (CreateResponse);
+  rpc GetProject(GetProjectRequest) returns (Project);
+  rpc GetProjectsByUser(GetProjectsByUserRequest) returns (GetProjectsByUserResponse);
+  rpc Update(UpdateRequest) returns (Project);
+  rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
+}
+
+message CreateRequest {
+  string name = 1 [(validate.rules).string = {min_len: 1, max_len: 100}];
+  string user_id = 2 [(validate.rules).string = {uuid: true}];
+}
+
+message CreateResponse {
+  string project_id = 1 [(validate.rules).string = {uuid: true}];
+}
+
+message GetProjectRequest {
+  string project_id = 1 [(validate.rules).string = {uuid: true}];
+}
+
+message GetProjectsByUserRequest {
+  string user_id = 1 [(validate.rules).string = {uuid: true}];
+}
+
+message GetProjectsByUserResponse {
+  repeated Project projects = 1;
+}
+
+message UpdateRequest {
+  string project_id = 1 [(validate.rules).string = {uuid: true}];
+  string new_name = 2 [(validate.rules).string = {min_len: 1, max_len: 100}];
+}
+
+message DeleteRequest {
+  string project_id = 1 [(validate.rules).string = {uuid: true}];
+}
+
+message Project {
+  string id = 1 [(validate.rules).string = {uuid: true}];
+  string name = 2;
+  string owner_id = 3 [(validate.rules).string = {uuid: true}];
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+}
+
+message Empty {}
+
+message ErrorDetail {
+  string code = 1;
+  map<string, string> errors = 2;
+}
