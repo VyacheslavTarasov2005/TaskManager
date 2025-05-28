@@ -5,6 +5,7 @@ import (
 	"log"
 	"project-service/config"
 	"project-service/internal/delivery/grpc"
+	"project-service/internal/delivery/grpc/auth"
 	"project-service/internal/repository/postgres"
 	"project-service/internal/service/implementations"
 	"project-service/migrations"
@@ -28,7 +29,11 @@ func main() {
 
 	projectService := implementations.NewProjectServiceImpl(projectRepository)
 
-	grpcServer := grpc.SetupServer(projectService)
+	authClient, err := auth.NewUserServiceClient("localhost:50051")
+
+	defer authClient.Close()
+
+	grpcServer := grpc.SetupServer(projectService, authClient)
 
 	if err = grpc.StartGRPCServer(grpcServer, "50051"); err != nil {
 		log.Fatalf("Failed to start grpc server: %v", err)

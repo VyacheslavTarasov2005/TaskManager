@@ -2,9 +2,8 @@ package interceptor
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
-	"net/http"
+	"project-service/internal/delivery/grpc/auth"
 	"strings"
 
 	"google.golang.org/grpc"
@@ -29,7 +28,7 @@ var publicMethods = map[string]bool{
 	"/project.ProjectService/Delete":            true,
 }
 
-func AuthInterceptor() grpc.UnaryServerInterceptor {
+func AuthInterceptor(cli *auth.UserServiceClient) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo,
 		handler grpc.UnaryHandler) (interface{}, error) {
 		if publicMethods[info.FullMethod] {
@@ -53,25 +52,12 @@ func AuthInterceptor() grpc.UnaryServerInterceptor {
 
 		token := strings.TrimPrefix(authHeader, "Bearer ")
 
-		// изменить на локальный адрес сервиса авторизации
-		reqHttp, err := http.NewRequest("POST", "http://user-service.local/auth/validate", nil)
+		userID, err := cli.GetClaims(ctx, token)
 		if err != nil {
-			return nil, status.Error(codes.Internal, "failed to create validation request")
-		}
-		reqHttp.Header.Set("Authorization", "Bearer "+token)
-
-		resp, err := http.DefaultClient.Do(reqHttp)
-		if err != nil || resp.StatusCode != http.StatusOK {
 			return nil, status.Error(codes.Unauthenticated, "invalid token")
 		}
-		defer resp.Body.Close()
 
-		var authRes AuthResponse
-		if err := json.NewDecoder(resp.Body).Decode(&authRes); err != nil {
-			return nil, status.Error(codes.Internal, "invalid user-service response")
-		}
-
-		ctx = context.WithValue(ctx, userIDKey, authRes.UserID)
+		ctx = context.WithValue(ctx, userIDKey, userID)
 
 		return handler(ctx, req)
 	}

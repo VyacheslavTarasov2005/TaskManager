@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"net"
+	"project-service/internal/delivery/grpc/auth"
 	interceptor "project-service/internal/delivery/grpc/interceptors"
 	"project-service/internal/delivery/grpc/pb"
 	"project-service/internal/service/interfaces"
@@ -9,9 +10,9 @@ import (
 	"google.golang.org/grpc"
 )
 
-func SetupServer(projectrService interfaces.ProjectService) *grpc.Server {
+func SetupServer(projectrService interfaces.ProjectService, cli *auth.UserServiceClient) *grpc.Server {
 	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(interceptor.AuthInterceptor()),
+		grpc.UnaryInterceptor(interceptor.AuthInterceptor(cli)),
 	)
 
 	pb.RegisterProjectServiceServer(grpcServer, NewProjectServer(projectrService))
