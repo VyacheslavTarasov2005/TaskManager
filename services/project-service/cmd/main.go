@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"fmt"
@@ -13,13 +13,17 @@ import (
 
 func main() {
 	cfg := config.LoadConfig()
-	fmt.Printf("User Service started with config: %+v\n", cfg)
 
 	dbConn, err := postgres.NewPostgresConnection(cfg.PostgresHost, cfg.PostgresUser, cfg.PostgresPassword,
 		cfg.PostgresDBName, cfg.PostgresPort)
 	if err != nil {
 		log.Fatalf("Failed to connect to db: %v", err)
 	}
+	defer func() {
+		sqlDB, _ := dbConn.DB()
+		sqlDB.Close()
+	}()
+	fmt.Printf("User Service started with config: %+v\n", cfg)
 
 	if err := migrations.Migrate(dbConn); err != nil {
 		log.Fatalf("Failed to run migrations: %v", err)

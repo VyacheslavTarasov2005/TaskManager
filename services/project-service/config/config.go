@@ -15,7 +15,7 @@ type Config struct {
 func LoadConfig() *Config {
 	config := &Config{
 		PostgresHost:     getEnv("POSTGRES_HOST", "localhost"),
-		PostgresPort:     getEnv("POSTGRES_PORT", "5432"),
+		PostgresPort:     getEnv("POSTGRES_PORT", "5433"),
 		PostgresUser:     getEnv("POSTGRES_USER", "postgres"),
 		PostgresPassword: getEnv("POSTGRES_PASSWORD", "123456"),
 		PostgresDBName:   getEnv("POSTGRES_DB_NAME", "UsersDB"),

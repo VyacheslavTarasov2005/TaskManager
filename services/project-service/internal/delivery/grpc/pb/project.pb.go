@@ -354,7 +354,7 @@ type Project struct {
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	OwnerId       string                 `protobuf:"bytes,3,opt,name=owner_id,json=ownerId,proto3" json:"owner_id,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=updated_at,json=updatedAt,proto3,oneof" json:"updated_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -536,15 +536,16 @@ const file_project_proto_rawDesc = "" +
 	"\bnew_name\x18\x02 \x01(\tB\t\xfaB\x06r\x04\x10\x01\x18dR\anewName\"8\n" +
 	"\rDeleteRequest\x12'\n" +
 	"\n" +
-	"project_id\x18\x01 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\tprojectId\"\xd2\x01\n" +
+	"project_id\x18\x01 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\tprojectId\"\xe6\x01\n" +
 	"\aProject\x12\x18\n" +
 	"\x02id\x18\x01 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12#\n" +
 	"\bowner_id\x18\x03 \x01(\tB\b\xfaB\x05r\x03\xb0\x01\x01R\aownerId\x129\n" +
 	"\n" +
-	"created_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"created_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12>\n" +
 	"\n" +
-	"updated_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\a\n" +
+	"updated_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampH\x00R\tupdatedAt\x88\x01\x01B\r\n" +
+	"\v_updated_at\"\a\n" +
 	"\x05Empty\"\x96\x01\n" +
 	"\vErrorDetail\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\x128\n" +
@@ -615,6 +616,7 @@ func file_project_proto_init() {
 	if File_project_proto != nil {
 		return
 	}
+	file_project_proto_msgTypes[7].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
