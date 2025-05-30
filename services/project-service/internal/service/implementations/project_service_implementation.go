@@ -2,13 +2,14 @@ package implementations
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"project-service/internal/domain/interfaces"
 	"project-service/internal/domain/models"
+	"project-service/internal/service/errors"
+	"project-service/pkg/utils"
+	"time"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type projectServiceImpl struct {
@@ -33,9 +34,6 @@ func (s *projectServiceImpl) Create(ctx context.Context, projectName string, use
 	}
 
 	if err := s.repo.Add(ctx, project); err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
 		return nil, err
 	}
 
@@ -50,21 +48,30 @@ func (s *projectServiceImpl) GetProjectsByUser(ctx context.Context, ownerId uuid
 	return s.repo.GetByOwner(ctx, ownerId)
 }
 
-func (s *projectServiceImpl) Update(ctx context.Context, projectId uuid.UUID, newName string) (*models.Project, error) {
+func (s *projectServiceImpl) Update(ctx context.Context, userId, projectId uuid.UUID, newName string) (*models.Project, error) {
 	project, err := s.repo.GetByID(ctx, projectId)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
 		return nil, err
 	}
 
+	projectSameName, err := s.repo.GetByOwnerAndProjectName(ctx, userId, newName)
+	if err != nil {
+		return nil, err
+	}
+	if projectSameName != nil && projectSameName.Name == newName {
+		return nil, errors.ApplicationError{
+			StatusCode: 409,
+			Code:       "EmailConflict",
+			Errors: map[string]string{
+				"message": "Email address is already in use",
+			},
+		}
+	}
+
 	project.Name = newName
+	project.UpdatedAt = utils.Ptr(time.Now())
 
 	if err := s.repo.Update(ctx, *project); err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
 		return nil, err
 	}
 

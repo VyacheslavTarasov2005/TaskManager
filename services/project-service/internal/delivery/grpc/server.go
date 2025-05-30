@@ -71,7 +71,7 @@ func (s *ProjectServer) GetProject(ctx context.Context, req *pb.GetProjectReques
 		Name:      project.Name,
 		OwnerId:   project.OwnerID.String(),
 		CreatedAt: timestamppb.New(project.CreatedAt),
-		UpdatedAt: nullableTimeToTimestamppb(&project.UpdatedAt),
+		UpdatedAt: nullableTimeToTimestamppb(project.UpdatedAt),
 	}, nil
 }
 
@@ -106,7 +106,7 @@ func (s *ProjectServer) GetProjectsByUser(ctx context.Context, req *pb.GetProjec
 			Name:      project.Name,
 			OwnerId:   project.OwnerID.String(),
 			CreatedAt: timestamppb.New(project.CreatedAt),
-			UpdatedAt: nullableTimeToTimestamppb(&project.UpdatedAt),
+			UpdatedAt: nullableTimeToTimestamppb(project.UpdatedAt),
 		})
 	}
 	return &pb.GetProjectsByUserResponse{
@@ -152,7 +152,7 @@ func (s *ProjectServer) Update(ctx context.Context, req *pb.UpdateRequest) (*pb.
 			Errors:     map[string]string{"message": "User don't have acces to edit this project"},
 		})
 	}
-	updatedProject, err := s.projectService.Update(ctx, projectID, req.NewName)
+	updatedProject, err := s.projectService.Update(ctx, userID, projectID, req.NewName)
 	if err != nil {
 		return nil, errors.ParseError(err)
 	}
@@ -161,7 +161,7 @@ func (s *ProjectServer) Update(ctx context.Context, req *pb.UpdateRequest) (*pb.
 		Name:      updatedProject.Name,
 		OwnerId:   updatedProject.OwnerID.String(),
 		CreatedAt: timestamppb.New(updatedProject.CreatedAt),
-		UpdatedAt: nullableTimeToTimestamppb(&updatedProject.UpdatedAt),
+		UpdatedAt: nullableTimeToTimestamppb(project.UpdatedAt),
 	}, nil
 }
 

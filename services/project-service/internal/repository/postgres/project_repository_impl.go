@@ -21,7 +21,6 @@ func (r *projectRepository) Add(ctx context.Context, project models.Project) err
 	now := time.Now()
 	project.ID = uuid.New()
 	project.CreatedAt = now
-	project.UpdatedAt = now
 	return r.db.WithContext(ctx).Create(&project).Error
 }
 
@@ -49,7 +48,6 @@ func (r *projectRepository) GetByOwner(ctx context.Context, owner uuid.UUID) ([]
 }
 
 func (r *projectRepository) Update(ctx context.Context, project models.Project) error {
-	project.UpdatedAt = time.Now()
 	return r.db.WithContext(ctx).Save(&project).Error
 }
 
