@@ -6,7 +6,7 @@ import (
 	auth_pb "project-service/internal/delivery/grpc/auth/auth_pb" // путь к сгенерированным .pb.go
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -17,8 +17,7 @@ type UserServiceClient struct {
 
 // NewUserServiceClient создает и возвращает клиента с открытым соединением
 func NewUserServiceClient(addr string) (*UserServiceClient, error) {
-	creds := credentials.NewClientTLSFromCert(nil, "")
-	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(creds)) // ❗ Для продакшена — использовать WithTransportCredentials!
+	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}

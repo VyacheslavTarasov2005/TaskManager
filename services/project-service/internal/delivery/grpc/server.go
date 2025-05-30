@@ -24,7 +24,7 @@ func NewProjectServer(projectService interfaces.ProjectService) *ProjectServer {
 	}
 }
 
-func (s *ProjectServer) CreateProject(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error) {
+func (s *ProjectServer) Create(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error) {
 	userIDVal := ctx.Value("user_id")
 	if userIDVal == nil {
 		return nil, errors.ParseError(serviceErrors.ApplicationError{
@@ -75,7 +75,7 @@ func (s *ProjectServer) GetProject(ctx context.Context, req *pb.GetProjectReques
 	}, nil
 }
 
-func (s *ProjectServer) GetProjectsByUser(ctx context.Context, req *pb.GetProjectsByUserRequest) (*pb.GetProjectsByUserResponse, error) {
+func (s *ProjectServer) GetProjectsByUser(ctx context.Context, req *emptypb.Empty) (*pb.GetProjectsByUserResponse, error) {
 	userIDVal := ctx.Value("user_id")
 	if userIDVal == nil {
 		return nil, errors.ParseError(serviceErrors.ApplicationError{

@@ -33,7 +33,7 @@ const (
 type ProjectServiceClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 	GetProject(ctx context.Context, in *GetProjectRequest, opts ...grpc.CallOption) (*Project, error)
-	GetProjectsByUser(ctx context.Context, in *GetProjectsByUserRequest, opts ...grpc.CallOption) (*GetProjectsByUserResponse, error)
+	GetProjectsByUser(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetProjectsByUserResponse, error)
 	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*Project, error)
 	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
@@ -66,7 +66,7 @@ func (c *projectServiceClient) GetProject(ctx context.Context, in *GetProjectReq
 	return out, nil
 }
 
-func (c *projectServiceClient) GetProjectsByUser(ctx context.Context, in *GetProjectsByUserRequest, opts ...grpc.CallOption) (*GetProjectsByUserResponse, error) {
+func (c *projectServiceClient) GetProjectsByUser(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetProjectsByUserResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetProjectsByUserResponse)
 	err := c.cc.Invoke(ctx, ProjectService_GetProjectsByUser_FullMethodName, in, out, cOpts...)
@@ -102,7 +102,7 @@ func (c *projectServiceClient) Delete(ctx context.Context, in *DeleteRequest, op
 type ProjectServiceServer interface {
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
 	GetProject(context.Context, *GetProjectRequest) (*Project, error)
-	GetProjectsByUser(context.Context, *GetProjectsByUserRequest) (*GetProjectsByUserResponse, error)
+	GetProjectsByUser(context.Context, *emptypb.Empty) (*GetProjectsByUserResponse, error)
 	Update(context.Context, *UpdateRequest) (*Project, error)
 	Delete(context.Context, *DeleteRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedProjectServiceServer()
@@ -121,7 +121,7 @@ func (UnimplementedProjectServiceServer) Create(context.Context, *CreateRequest)
 func (UnimplementedProjectServiceServer) GetProject(context.Context, *GetProjectRequest) (*Project, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProject not implemented")
 }
-func (UnimplementedProjectServiceServer) GetProjectsByUser(context.Context, *GetProjectsByUserRequest) (*GetProjectsByUserResponse, error) {
+func (UnimplementedProjectServiceServer) GetProjectsByUser(context.Context, *emptypb.Empty) (*GetProjectsByUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProjectsByUser not implemented")
 }
 func (UnimplementedProjectServiceServer) Update(context.Context, *UpdateRequest) (*Project, error) {
@@ -188,7 +188,7 @@ func _ProjectService_GetProject_Handler(srv interface{}, ctx context.Context, de
 }
 
 func _ProjectService_GetProjectsByUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetProjectsByUserRequest)
+	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -200,7 +200,7 @@ func _ProjectService_GetProjectsByUser_Handler(srv interface{}, ctx context.Cont
 		FullMethod: ProjectService_GetProjectsByUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProjectServiceServer).GetProjectsByUser(ctx, req.(*GetProjectsByUserRequest))
+		return srv.(ProjectServiceServer).GetProjectsByUser(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }

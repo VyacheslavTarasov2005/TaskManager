@@ -54,7 +54,7 @@ func (s *projectServiceImpl) Update(ctx context.Context, userId, projectId uuid.
 		return nil, err
 	}
 
-	projectSameName, err := s.repo.GetByOwnerAndProjectName(ctx, userId, newName)
+	projectSameName, err := s.repo.GetByID(ctx, projectId)
 	if err != nil {
 		return nil, err
 	}

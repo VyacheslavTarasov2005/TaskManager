@@ -2,7 +2,6 @@ package interceptor
 
 import (
 	"context"
-	"errors"
 	"project-service/internal/delivery/grpc/auth"
 	"strings"
 
@@ -12,20 +11,16 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type contextKey string
-
-const userIDKey = contextKey("user_id")
-
 type AuthResponse struct {
 	UserID string `json:"user_id"`
 }
 
 var publicMethods = map[string]bool{
-	"/project.ProjectService/Create":            true,
+	"/project.ProjectService/Create":            false,
 	"/project.ProjectService/GetProject":        true,
-	"/project.ProjectService/GetProjectsByUser": true,
-	"/project.ProjectService/Update":            true,
-	"/project.ProjectService/Delete":            true,
+	"/project.ProjectService/GetProjectsByUser": false,
+	"/project.ProjectService/Update":            false,
+	"/project.ProjectService/Delete":            false,
 }
 
 func AuthInterceptor(cli *auth.UserServiceClient) grpc.UnaryServerInterceptor {
@@ -57,16 +52,8 @@ func AuthInterceptor(cli *auth.UserServiceClient) grpc.UnaryServerInterceptor {
 			return nil, status.Error(codes.Unauthenticated, "invalid token")
 		}
 
-		ctx = context.WithValue(ctx, userIDKey, userID)
+		newCtx := context.WithValue(ctx, "user_id", userID)
 
-		return handler(ctx, req)
+		return handler(newCtx, req)
 	}
-}
-
-func UserIDFromContext(ctx context.Context) (string, error) {
-	userID, ok := ctx.Value(userIDKey).(string)
-	if !ok || userID == "" {
-		return "", errors.New("user_id not found in context")
-	}
-	return userID, nil
 }

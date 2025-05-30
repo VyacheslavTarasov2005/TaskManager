@@ -44,7 +44,7 @@ func main() {
 
 	grpcServer := grpc.SetupServer(userService, authService)
 
-	if err = grpc.StartGRPCServer(grpcServer, "50051"); err != nil {
+	if err = grpc.StartGRPCServer(grpcServer, "50052"); err != nil {
 		log.Fatalf("Failed to start grpc server: %v", err)
 	}
 }

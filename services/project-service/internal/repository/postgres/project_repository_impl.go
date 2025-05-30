@@ -41,7 +41,7 @@ func (r *projectRepository) GetByOwnerAndProjectName(ctx context.Context, owner 
 
 func (r *projectRepository) GetByOwner(ctx context.Context, owner uuid.UUID) ([]*models.Project, error) {
 	var projects []*models.Project
-	if err := r.db.WithContext(ctx).First(&projects, "owner_id = ?", owner).Error; err != nil {
+	if err := r.db.WithContext(ctx).Find(&projects, "owner_id = ?", owner).Error; err != nil {
 		return nil, err
 	}
 	return projects, nil
@@ -52,5 +52,5 @@ func (r *projectRepository) Update(ctx context.Context, project models.Project) 
 }
 
 func (r *projectRepository) Delete(ctx context.Context, projectId uuid.UUID) error {
-	return r.db.WithContext(ctx).Delete("id = ?", projectId).Error
+	return r.db.WithContext(ctx).Delete(&models.Project{}, "id = ?", projectId).Error
 }

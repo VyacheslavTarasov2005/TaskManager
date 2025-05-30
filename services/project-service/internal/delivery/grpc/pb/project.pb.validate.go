@@ -71,28 +71,8 @@ func (m *CreateRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if err := m._validateUuid(m.GetUserId()); err != nil {
-		err = CreateRequestValidationError{
-			field:  "UserId",
-			reason: "value must be a valid UUID",
-			cause:  err,
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
 	if len(errors) > 0 {
 		return CreateRequestMultiError(errors)
-	}
-
-	return nil
-}
-
-func (m *CreateRequest) _validateUuid(uuid string) error {
-	if matched := _project_uuidPattern.MatchString(uuid); !matched {
-		return errors.New("invalid uuid format")
 	}
 
 	return nil
@@ -410,128 +390,6 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = GetProjectRequestValidationError{}
-
-// Validate checks the field values on GetProjectsByUserRequest with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the first error encountered is returned, or nil if there are no violations.
-func (m *GetProjectsByUserRequest) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on GetProjectsByUserRequest with the
-// rules defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// GetProjectsByUserRequestMultiError, or nil if none found.
-func (m *GetProjectsByUserRequest) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *GetProjectsByUserRequest) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	if err := m._validateUuid(m.GetUserId()); err != nil {
-		err = GetProjectsByUserRequestValidationError{
-			field:  "UserId",
-			reason: "value must be a valid UUID",
-			cause:  err,
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
-	if len(errors) > 0 {
-		return GetProjectsByUserRequestMultiError(errors)
-	}
-
-	return nil
-}
-
-func (m *GetProjectsByUserRequest) _validateUuid(uuid string) error {
-	if matched := _project_uuidPattern.MatchString(uuid); !matched {
-		return errors.New("invalid uuid format")
-	}
-
-	return nil
-}
-
-// GetProjectsByUserRequestMultiError is an error wrapping multiple validation
-// errors returned by GetProjectsByUserRequest.ValidateAll() if the designated
-// constraints aren't met.
-type GetProjectsByUserRequestMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m GetProjectsByUserRequestMultiError) Error() string {
-	msgs := make([]string, 0, len(m))
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m GetProjectsByUserRequestMultiError) AllErrors() []error { return m }
-
-// GetProjectsByUserRequestValidationError is the validation error returned by
-// GetProjectsByUserRequest.Validate if the designated constraints aren't met.
-type GetProjectsByUserRequestValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e GetProjectsByUserRequestValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e GetProjectsByUserRequestValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e GetProjectsByUserRequestValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e GetProjectsByUserRequestValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e GetProjectsByUserRequestValidationError) ErrorName() string {
-	return "GetProjectsByUserRequestValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e GetProjectsByUserRequestValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sGetProjectsByUserRequest.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = GetProjectsByUserRequestValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = GetProjectsByUserRequestValidationError{}
 
 // Validate checks the field values on GetProjectsByUserResponse with the rules
 // defined in the proto definition for this message. If any rules are

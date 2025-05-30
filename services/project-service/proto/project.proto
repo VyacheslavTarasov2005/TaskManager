@@ -11,14 +11,13 @@ import "validate/validate.proto";
 service ProjectService {
   rpc Create(CreateRequest) returns (CreateResponse);
   rpc GetProject(GetProjectRequest) returns (Project);
-  rpc GetProjectsByUser(GetProjectsByUserRequest) returns (GetProjectsByUserResponse);
+  rpc GetProjectsByUser(google.protobuf.Empty) returns (GetProjectsByUserResponse);
   rpc Update(UpdateRequest) returns (Project);
   rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
 }
 
 message CreateRequest {
   string name = 1 [(validate.rules).string = {min_len: 1, max_len: 100}];
-  string user_id = 2 [(validate.rules).string = {uuid: true}];
 }
 
 message CreateResponse {
@@ -27,10 +26,6 @@ message CreateResponse {
 
 message GetProjectRequest {
   string project_id = 1 [(validate.rules).string = {uuid: true}];
-}
-
-message GetProjectsByUserRequest {
-  string user_id = 1 [(validate.rules).string = {uuid: true}];
 }
 
 message GetProjectsByUserResponse {

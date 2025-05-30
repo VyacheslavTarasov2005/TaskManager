@@ -33,7 +33,7 @@ func main() {
 
 	projectService := implementations.NewProjectServiceImpl(projectRepository)
 
-	authClient, err := auth.NewUserServiceClient("localhost:50051")
+	authClient, err := auth.NewUserServiceClient("localhost:50052")
 
 	defer authClient.Close()
 
@@ -42,4 +42,5 @@ func main() {
 	if err = grpc.StartGRPCServer(grpcServer, "50051"); err != nil {
 		log.Fatalf("Failed to start grpc server: %v", err)
 	}
+	fmt.Println("API started")
 }
