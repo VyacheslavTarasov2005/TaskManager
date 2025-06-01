@@ -10,7 +10,7 @@ import (
 type ProjectRepository interface {
 	Add(ctx context.Context, project models.Project) error
 	GetByID(ctx context.Context, id uuid.UUID) (*models.Project, error)
-	GetByOwner(ctx context.Context, owner uuid.UUID) ([]*models.Project, error)
+	GetByOwner(ctx context.Context, owner uuid.UUID, query string) ([]*models.Project, error)
 	GetByOwnerAndProjectName(ctx context.Context, owner uuid.UUID, projectName string) (*models.Project, error)
 	//GetAll(ctx context.Context) ([]*models.Project, error)
 	Update(ctx context.Context, project models.Project) error

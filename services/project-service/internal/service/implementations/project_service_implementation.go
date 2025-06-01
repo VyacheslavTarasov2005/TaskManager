@@ -26,6 +26,9 @@ func (s *projectServiceImpl) Create(ctx context.Context, projectName string, use
 	if err == nil && existing != nil {
 		return nil, fmt.Errorf("project with name '%s' already exists for this user", projectName)
 	}
+	if err != nil {
+		return nil, err
+	}
 
 	project := models.Project{
 		ID:      uuid.New(),
@@ -44,8 +47,8 @@ func (s *projectServiceImpl) GetProject(ctx context.Context, projectId uuid.UUID
 	return s.repo.GetByID(ctx, projectId)
 }
 
-func (s *projectServiceImpl) GetProjectsByUser(ctx context.Context, ownerId uuid.UUID) ([]*models.Project, error) {
-	return s.repo.GetByOwner(ctx, ownerId)
+func (s *projectServiceImpl) GetProjectsByUser(ctx context.Context, ownerId uuid.UUID, query string) ([]*models.Project, error) {
+	return s.repo.GetByOwner(ctx, ownerId, query)
 }
 
 func (s *projectServiceImpl) Update(ctx context.Context, userId, projectId uuid.UUID, newName string) (*models.Project, error) {
@@ -63,7 +66,7 @@ func (s *projectServiceImpl) Update(ctx context.Context, userId, projectId uuid.
 			StatusCode: 409,
 			Code:       "EmailConflict",
 			Errors: map[string]string{
-				"message": "Email address is already in use",
+				"message": "Project name is already in use",
 			},
 		}
 	}

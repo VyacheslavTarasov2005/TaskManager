@@ -39,11 +39,23 @@ func (r *projectRepository) GetByOwnerAndProjectName(ctx context.Context, owner 
 	return &project, nil
 }
 
-func (r *projectRepository) GetByOwner(ctx context.Context, owner uuid.UUID) ([]*models.Project, error) {
+func (r *projectRepository) GetByOwner(ctx context.Context, owner uuid.UUID, query string) ([]*models.Project, error) {
 	var projects []*models.Project
-	if err := r.db.WithContext(ctx).Find(&projects, "owner_id = ?", owner).Error; err != nil {
+
+	db := r.db.WithContext(ctx).Model(&models.Project{}).Where("owner_id = ?", owner)
+
+	if query != "" {
+		db = db.Where("name ILIKE ?", "%"+query+"%")
+	}
+
+	err := db.
+		Order("created_at DESC").
+		Find(&projects).Error
+
+	if err != nil {
 		return nil, err
 	}
+
 	return projects, nil
 }
 

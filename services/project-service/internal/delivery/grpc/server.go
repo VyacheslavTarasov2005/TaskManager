@@ -75,7 +75,12 @@ func (s *ProjectServer) GetProject(ctx context.Context, req *pb.GetProjectReques
 	}, nil
 }
 
-func (s *ProjectServer) GetProjectsByUser(ctx context.Context, req *emptypb.Empty) (*pb.GetProjectsByUserResponse, error) {
+func (s *ProjectServer) GetMyProjects(ctx context.Context, req *pb.GetMyProjectsRequest) (*pb.GetMyProjectsResponse, error) {
+	query := ""
+	if req.Query != nil {
+		query = *req.Query
+	}
+
 	userIDVal := ctx.Value("user_id")
 	if userIDVal == nil {
 		return nil, errors.ParseError(serviceErrors.ApplicationError{
@@ -93,7 +98,8 @@ func (s *ProjectServer) GetProjectsByUser(ctx context.Context, req *emptypb.Empt
 		})
 	}
 
-	projects, err := s.projectService.GetProjectsByUser(ctx, userID)
+	//изменить с получения проектов владельцем которого является пользователь на те в которых он находится
+	projects, err := s.projectService.GetProjectsByUser(ctx, userID, query)
 	if err != nil {
 		return nil, errors.ParseError(err)
 	}
@@ -109,7 +115,7 @@ func (s *ProjectServer) GetProjectsByUser(ctx context.Context, req *emptypb.Empt
 			UpdatedAt: nullableTimeToTimestamppb(project.UpdatedAt),
 		})
 	}
-	return &pb.GetProjectsByUserResponse{
+	return &pb.GetMyProjectsResponse{
 		Projects: projectsResponse,
 	}, nil
 }

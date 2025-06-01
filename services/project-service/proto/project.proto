@@ -11,7 +11,7 @@ import "validate/validate.proto";
 service ProjectService {
   rpc Create(CreateRequest) returns (CreateResponse);
   rpc GetProject(GetProjectRequest) returns (Project);
-  rpc GetProjectsByUser(google.protobuf.Empty) returns (GetProjectsByUserResponse);
+  rpc GetMyProjects(GetMyProjectsRequest) returns (GetMyProjectsResponse);
   rpc Update(UpdateRequest) returns (Project);
   rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
 }
@@ -28,7 +28,11 @@ message GetProjectRequest {
   string project_id = 1 [(validate.rules).string = {uuid: true}];
 }
 
-message GetProjectsByUserResponse {
+message GetMyProjectsRequest {
+  optional string query = 1;
+}
+
+message GetMyProjectsResponse {
   repeated Project projects = 1;
 }
 
