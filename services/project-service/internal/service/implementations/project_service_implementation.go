@@ -30,13 +30,9 @@ func (s *projectServiceImpl) Create(ctx context.Context, projectName string, use
 		return nil, err
 	}
 
-	project := models.Project{
-		ID:      uuid.New(),
-		Name:    projectName,
-		OwnerID: userId,
-	}
+	project := models.NewProject(projectName, userId)
 
-	if err := s.repo.Add(ctx, project); err != nil {
+	if err := s.repo.Add(ctx, *project); err != nil {
 		return nil, err
 	}
 

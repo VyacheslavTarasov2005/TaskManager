@@ -20,11 +20,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ProjectService_Create_FullMethodName        = "/project.ProjectService/Create"
-	ProjectService_GetProject_FullMethodName    = "/project.ProjectService/GetProject"
-	ProjectService_GetMyProjects_FullMethodName = "/project.ProjectService/GetMyProjects"
-	ProjectService_Update_FullMethodName        = "/project.ProjectService/Update"
-	ProjectService_Delete_FullMethodName        = "/project.ProjectService/Delete"
+	ProjectService_Create_FullMethodName          = "/project.ProjectService/Create"
+	ProjectService_GetProject_FullMethodName      = "/project.ProjectService/GetProject"
+	ProjectService_GetMyProjects_FullMethodName   = "/project.ProjectService/GetMyProjects"
+	ProjectService_Update_FullMethodName          = "/project.ProjectService/Update"
+	ProjectService_Delete_FullMethodName          = "/project.ProjectService/Delete"
+	ProjectService_AddToProject_FullMethodName    = "/project.ProjectService/AddToProject"
+	ProjectService_KickFromProject_FullMethodName = "/project.ProjectService/KickFromProject"
+	ProjectService_GetMyRole_FullMethodName       = "/project.ProjectService/GetMyRole"
 )
 
 // ProjectServiceClient is the client API for ProjectService service.
@@ -36,6 +39,9 @@ type ProjectServiceClient interface {
 	GetMyProjects(ctx context.Context, in *GetMyProjectsRequest, opts ...grpc.CallOption) (*GetMyProjectsResponse, error)
 	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*Project, error)
 	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AddToProject(ctx context.Context, in *AddToProjectRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	KickFromProject(ctx context.Context, in *KickFromProjectRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetMyRole(ctx context.Context, in *GetMyRoleRequest, opts ...grpc.CallOption) (*GetMyRoleResponse, error)
 }
 
 type projectServiceClient struct {
@@ -96,6 +102,36 @@ func (c *projectServiceClient) Delete(ctx context.Context, in *DeleteRequest, op
 	return out, nil
 }
 
+func (c *projectServiceClient) AddToProject(ctx context.Context, in *AddToProjectRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ProjectService_AddToProject_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *projectServiceClient) KickFromProject(ctx context.Context, in *KickFromProjectRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, ProjectService_KickFromProject_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *projectServiceClient) GetMyRole(ctx context.Context, in *GetMyRoleRequest, opts ...grpc.CallOption) (*GetMyRoleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMyRoleResponse)
+	err := c.cc.Invoke(ctx, ProjectService_GetMyRole_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProjectServiceServer is the server API for ProjectService service.
 // All implementations must embed UnimplementedProjectServiceServer
 // for forward compatibility.
@@ -105,6 +141,9 @@ type ProjectServiceServer interface {
 	GetMyProjects(context.Context, *GetMyProjectsRequest) (*GetMyProjectsResponse, error)
 	Update(context.Context, *UpdateRequest) (*Project, error)
 	Delete(context.Context, *DeleteRequest) (*emptypb.Empty, error)
+	AddToProject(context.Context, *AddToProjectRequest) (*emptypb.Empty, error)
+	KickFromProject(context.Context, *KickFromProjectRequest) (*emptypb.Empty, error)
+	GetMyRole(context.Context, *GetMyRoleRequest) (*GetMyRoleResponse, error)
 	mustEmbedUnimplementedProjectServiceServer()
 }
 
@@ -129,6 +168,15 @@ func (UnimplementedProjectServiceServer) Update(context.Context, *UpdateRequest)
 }
 func (UnimplementedProjectServiceServer) Delete(context.Context, *DeleteRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+}
+func (UnimplementedProjectServiceServer) AddToProject(context.Context, *AddToProjectRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddToProject not implemented")
+}
+func (UnimplementedProjectServiceServer) KickFromProject(context.Context, *KickFromProjectRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method KickFromProject not implemented")
+}
+func (UnimplementedProjectServiceServer) GetMyRole(context.Context, *GetMyRoleRequest) (*GetMyRoleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMyRole not implemented")
 }
 func (UnimplementedProjectServiceServer) mustEmbedUnimplementedProjectServiceServer() {}
 func (UnimplementedProjectServiceServer) testEmbeddedByValue()                        {}
@@ -241,6 +289,60 @@ func _ProjectService_Delete_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProjectService_AddToProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddToProjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectServiceServer).AddToProject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProjectService_AddToProject_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectServiceServer).AddToProject(ctx, req.(*AddToProjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProjectService_KickFromProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(KickFromProjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectServiceServer).KickFromProject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProjectService_KickFromProject_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectServiceServer).KickFromProject(ctx, req.(*KickFromProjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProjectService_GetMyRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMyRoleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectServiceServer).GetMyRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProjectService_GetMyRole_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectServiceServer).GetMyRole(ctx, req.(*GetMyRoleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProjectService_ServiceDesc is the grpc.ServiceDesc for ProjectService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -267,6 +369,18 @@ var ProjectService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Delete",
 			Handler:    _ProjectService_Delete_Handler,
+		},
+		{
+			MethodName: "AddToProject",
+			Handler:    _ProjectService_AddToProject_Handler,
+		},
+		{
+			MethodName: "KickFromProject",
+			Handler:    _ProjectService_KickFromProject_Handler,
+		},
+		{
+			MethodName: "GetMyRole",
+			Handler:    _ProjectService_GetMyRole_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -1078,6 +1078,498 @@ var _ interface {
 	ErrorName() string
 } = ProjectValidationError{}
 
+// Validate checks the field values on AddToProjectRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *AddToProjectRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on AddToProjectRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// AddToProjectRequestMultiError, or nil if none found.
+func (m *AddToProjectRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *AddToProjectRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if err := m._validateUuid(m.GetUserId()); err != nil {
+		err = AddToProjectRequestValidationError{
+			field:  "UserId",
+			reason: "value must be a valid UUID",
+			cause:  err,
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if err := m._validateUuid(m.GetProjectId()); err != nil {
+		err = AddToProjectRequestValidationError{
+			field:  "ProjectId",
+			reason: "value must be a valid UUID",
+			cause:  err,
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return AddToProjectRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+func (m *AddToProjectRequest) _validateUuid(uuid string) error {
+	if matched := _project_uuidPattern.MatchString(uuid); !matched {
+		return errors.New("invalid uuid format")
+	}
+
+	return nil
+}
+
+// AddToProjectRequestMultiError is an error wrapping multiple validation
+// errors returned by AddToProjectRequest.ValidateAll() if the designated
+// constraints aren't met.
+type AddToProjectRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m AddToProjectRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m AddToProjectRequestMultiError) AllErrors() []error { return m }
+
+// AddToProjectRequestValidationError is the validation error returned by
+// AddToProjectRequest.Validate if the designated constraints aren't met.
+type AddToProjectRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e AddToProjectRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e AddToProjectRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e AddToProjectRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e AddToProjectRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e AddToProjectRequestValidationError) ErrorName() string {
+	return "AddToProjectRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e AddToProjectRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sAddToProjectRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = AddToProjectRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = AddToProjectRequestValidationError{}
+
+// Validate checks the field values on KickFromProjectRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *KickFromProjectRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on KickFromProjectRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// KickFromProjectRequestMultiError, or nil if none found.
+func (m *KickFromProjectRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *KickFromProjectRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if err := m._validateUuid(m.GetUserId()); err != nil {
+		err = KickFromProjectRequestValidationError{
+			field:  "UserId",
+			reason: "value must be a valid UUID",
+			cause:  err,
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if err := m._validateUuid(m.GetProjectId()); err != nil {
+		err = KickFromProjectRequestValidationError{
+			field:  "ProjectId",
+			reason: "value must be a valid UUID",
+			cause:  err,
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return KickFromProjectRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+func (m *KickFromProjectRequest) _validateUuid(uuid string) error {
+	if matched := _project_uuidPattern.MatchString(uuid); !matched {
+		return errors.New("invalid uuid format")
+	}
+
+	return nil
+}
+
+// KickFromProjectRequestMultiError is an error wrapping multiple validation
+// errors returned by KickFromProjectRequest.ValidateAll() if the designated
+// constraints aren't met.
+type KickFromProjectRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m KickFromProjectRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m KickFromProjectRequestMultiError) AllErrors() []error { return m }
+
+// KickFromProjectRequestValidationError is the validation error returned by
+// KickFromProjectRequest.Validate if the designated constraints aren't met.
+type KickFromProjectRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e KickFromProjectRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e KickFromProjectRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e KickFromProjectRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e KickFromProjectRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e KickFromProjectRequestValidationError) ErrorName() string {
+	return "KickFromProjectRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e KickFromProjectRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sKickFromProjectRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = KickFromProjectRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = KickFromProjectRequestValidationError{}
+
+// Validate checks the field values on GetMyRoleRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *GetMyRoleRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetMyRoleRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetMyRoleRequestMultiError, or nil if none found.
+func (m *GetMyRoleRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetMyRoleRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if err := m._validateUuid(m.GetProjectId()); err != nil {
+		err = GetMyRoleRequestValidationError{
+			field:  "ProjectId",
+			reason: "value must be a valid UUID",
+			cause:  err,
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return GetMyRoleRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+func (m *GetMyRoleRequest) _validateUuid(uuid string) error {
+	if matched := _project_uuidPattern.MatchString(uuid); !matched {
+		return errors.New("invalid uuid format")
+	}
+
+	return nil
+}
+
+// GetMyRoleRequestMultiError is an error wrapping multiple validation errors
+// returned by GetMyRoleRequest.ValidateAll() if the designated constraints
+// aren't met.
+type GetMyRoleRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetMyRoleRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetMyRoleRequestMultiError) AllErrors() []error { return m }
+
+// GetMyRoleRequestValidationError is the validation error returned by
+// GetMyRoleRequest.Validate if the designated constraints aren't met.
+type GetMyRoleRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetMyRoleRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetMyRoleRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetMyRoleRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetMyRoleRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetMyRoleRequestValidationError) ErrorName() string { return "GetMyRoleRequestValidationError" }
+
+// Error satisfies the builtin error interface
+func (e GetMyRoleRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetMyRoleRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetMyRoleRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetMyRoleRequestValidationError{}
+
+// Validate checks the field values on GetMyRoleResponse with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *GetMyRoleResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetMyRoleResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetMyRoleResponseMultiError, or nil if none found.
+func (m *GetMyRoleResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetMyRoleResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Role
+
+	if len(errors) > 0 {
+		return GetMyRoleResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetMyRoleResponseMultiError is an error wrapping multiple validation errors
+// returned by GetMyRoleResponse.ValidateAll() if the designated constraints
+// aren't met.
+type GetMyRoleResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetMyRoleResponseMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetMyRoleResponseMultiError) AllErrors() []error { return m }
+
+// GetMyRoleResponseValidationError is the validation error returned by
+// GetMyRoleResponse.Validate if the designated constraints aren't met.
+type GetMyRoleResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetMyRoleResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetMyRoleResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetMyRoleResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetMyRoleResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetMyRoleResponseValidationError) ErrorName() string {
+	return "GetMyRoleResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetMyRoleResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetMyRoleResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetMyRoleResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetMyRoleResponseValidationError{}
+
 // Validate checks the field values on Empty with the rules defined in the
 // proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.

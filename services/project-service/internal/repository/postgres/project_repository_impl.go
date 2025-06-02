@@ -2,8 +2,8 @@ package postgres
 
 import (
 	"context"
+	"errors"
 	"project-service/internal/domain/models"
-	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -18,9 +18,6 @@ func NewProjectRepositoryImpl(db *gorm.DB) *projectRepository {
 }
 
 func (r *projectRepository) Add(ctx context.Context, project models.Project) error {
-	now := time.Now()
-	project.ID = uuid.New()
-	project.CreatedAt = now
 	return r.db.WithContext(ctx).Create(&project).Error
 }
 
@@ -33,7 +30,13 @@ func (r *projectRepository) GetByID(ctx context.Context, id uuid.UUID) (*models.
 }
 func (r *projectRepository) GetByOwnerAndProjectName(ctx context.Context, owner uuid.UUID, projectName string) (*models.Project, error) {
 	var project models.Project
-	if err := r.db.WithContext(ctx).First(&project, "owner_id = ? AND name = ?", owner, projectName).Error; err != nil {
+	err := r.db.WithContext(ctx).First(&project, "owner_id = ? AND name = ?", owner, projectName).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	if err != nil {
 		return nil, err
 	}
 	return &project, nil

@@ -2,6 +2,7 @@ package errors
 
 import (
 	"errors"
+
 	"project-service/internal/delivery/grpc/pb"
 	appErrors "project-service/internal/service/errors"
 
@@ -41,7 +42,13 @@ func convertHTTPToGRPCCode(httpCode int) codes.Code {
 		return codes.NotFound
 	case 409:
 		return codes.AlreadyExists
-	default:
+	case 429:
+		return codes.ResourceExhausted
+	case 500:
 		return codes.Internal
+	case 503:
+		return codes.Unavailable
+	default:
+		return codes.Unknown
 	}
 }

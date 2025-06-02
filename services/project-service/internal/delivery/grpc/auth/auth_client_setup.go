@@ -39,3 +39,15 @@ func (c *UserServiceClient) GetClaims(ctx context.Context, accessToken string) (
 
 	return resp.UserId, nil
 }
+
+func (c *UserServiceClient) GetUserProfile(ctx context.Context, user_id string) error {
+
+	_, err := c.client.GetUserProfile(ctx, &auth_pb.GetUserProfileRequest{
+		Id: user_id,
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

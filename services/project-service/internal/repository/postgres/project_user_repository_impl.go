@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"errors"
 	"project-service/internal/domain/models"
 
 	"github.com/google/uuid"
@@ -28,10 +29,17 @@ func (r *projectUserRepository) Delete(ctx context.Context, proj_id, user_id uui
 	return r.db.WithContext(ctx).Where("project_id = ? AND user_id = ?", proj_id, user_id).Delete(&models.ProjectUser{}).Error
 }
 
-func (r *projectUserRepository) GetRole(ctx context.Context, proj_id, user_id uuid.UUID) (*string, error) {
+func (r *projectUserRepository) GetRole(ctx context.Context, proj_id, user_id uuid.UUID) (*models.UserRole, error) {
 	var project models.ProjectUser
-	if err := r.db.WithContext(ctx).First(&project, "project_id = ? AND user_id = ?", proj_id, user_id).Error; err != nil {
+	err := r.db.WithContext(ctx).First(&project, "project_id = ? AND user_id = ?", proj_id, user_id).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	if err != nil {
 		return nil, err
 	}
+
 	return &project.Role, nil
 }

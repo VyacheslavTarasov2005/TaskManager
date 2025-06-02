@@ -21,6 +21,9 @@ var publicMethods = map[string]bool{
 	"/project.ProjectService/GetProjectsByUser": false,
 	"/project.ProjectService/Update":            false,
 	"/project.ProjectService/Delete":            false,
+	"/project.ProjectService/AddToProject":      false,
+	"/project.ProjectService/KickFromProject":   false,
+	"/project.ProjectService/GetMyRole":         false,
 }
 
 func AuthInterceptor(cli *auth.UserServiceClient) grpc.UnaryServerInterceptor {

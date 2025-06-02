@@ -2,12 +2,13 @@ package interceptors
 
 import (
 	"context"
+	"strings"
+	"user-service/internal/service/interfaces"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
-	"strings"
-	"user-service/internal/service/interfaces"
 )
 
 func AuthInterceptor(authService interfaces.AuthService) grpc.UnaryServerInterceptor {
@@ -50,6 +51,7 @@ func isPublicMethod(method string) bool {
 		"/user.UserService/Login":          true,
 		"/user.UserService/RefreshToken":   true,
 		"/user.UserService/RecoverAccount": true,
+		"/user.UserService/GetUserProfile": true,
 	}
 	return publicMethods[method]
 }

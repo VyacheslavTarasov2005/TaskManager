@@ -14,6 +14,9 @@ service ProjectService {
   rpc GetMyProjects(GetMyProjectsRequest) returns (GetMyProjectsResponse);
   rpc Update(UpdateRequest) returns (Project);
   rpc Delete(DeleteRequest) returns (google.protobuf.Empty);
+  rpc AddToProject(AddToProjectRequest) returns (google.protobuf.Empty);
+  rpc KickFromProject(KickFromProjectRequest) returns (google.protobuf.Empty);
+  rpc GetMyRole(GetMyRoleRequest) returns (GetMyRoleResponse);
 }
 
 message CreateRequest {
@@ -51,6 +54,30 @@ message Project {
   string owner_id = 3 [(validate.rules).string = {uuid: true}];
   google.protobuf.Timestamp created_at = 4;
   optional google.protobuf.Timestamp updated_at = 5;
+}
+
+message AddToProjectRequest {
+  string user_id = 1 [(validate.rules).string = {uuid: true}];
+  string project_id = 2 [(validate.rules).string = {uuid: true}];
+}
+
+message KickFromProjectRequest {
+  string user_id = 1 [(validate.rules).string = {uuid: true}];
+  string project_id = 2 [(validate.rules).string = {uuid: true}];
+}
+
+message GetMyRoleRequest {
+  string project_id = 2 [(validate.rules).string = {uuid: true}];
+}
+
+message GetMyRoleResponse {
+  Role role = 1;
+}
+
+enum Role {
+  UNKNOWN = 0;
+  OWNER = 1;
+  MEMBER = 2;
 }
 
 message Empty {}

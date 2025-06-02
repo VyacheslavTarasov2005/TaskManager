@@ -10,12 +10,12 @@ import (
 	"google.golang.org/grpc"
 )
 
-func SetupServer(projectrService interfaces.ProjectService, cli *auth.UserServiceClient) *grpc.Server {
+func SetupServer(projectrService interfaces.ProjectService, projectUserService interfaces.ProjectUserService, cli *auth.UserServiceClient) *grpc.Server {
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(interceptor.AuthInterceptor(cli)),
 	)
 
-	pb.RegisterProjectServiceServer(grpcServer, NewProjectServer(projectrService))
+	pb.RegisterProjectServiceServer(grpcServer, NewProjectServer(projectrService, projectUserService, cli))
 
 	return grpcServer
 }

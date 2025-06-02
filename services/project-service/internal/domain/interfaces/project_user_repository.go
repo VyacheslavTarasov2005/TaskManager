@@ -11,5 +11,5 @@ type ProjectUserRepository interface {
 	DeleteProject(ctx context.Context, proj_id uuid.UUID) error
 	Add(ctx context.Context, projectUser models.ProjectUser) error
 	Delete(ctx context.Context, proj_id, user_id uuid.UUID) error
-	GetRole(ctx context.Context, proj_id, user_id uuid.UUID) (*string, error)
+	GetRole(ctx context.Context, proj_id, user_id uuid.UUID) (*models.UserRole, error)
 }

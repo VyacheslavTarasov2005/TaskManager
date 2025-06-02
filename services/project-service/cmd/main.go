@@ -30,14 +30,16 @@ func main() {
 	}
 
 	projectRepository := postgres.NewProjectRepositoryImpl(dbConn)
+	projectUserRepository := postgres.NewProjectUserRepositoryImpl(dbConn)
 
 	projectService := implementations.NewProjectServiceImpl(projectRepository)
+	projectUserService := implementations.NewProjectUserServiceImpl(projectUserRepository)
 
 	authClient, err := auth.NewUserServiceClient("localhost:50052")
 
 	defer authClient.Close()
 
-	grpcServer := grpc.SetupServer(projectService, authClient)
+	grpcServer := grpc.SetupServer(projectService, projectUserService, authClient)
 
 	if err = grpc.StartGRPCServer(grpcServer, "50051"); err != nil {
 		log.Fatalf("Failed to start grpc server: %v", err)
